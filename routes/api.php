@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DishController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,4 +19,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('dishes', [App\Http\Controllers\DishController::class, 'index']);
+Route::get('dishes', [DishController::class, 'index'])->name('index');
+Route::get('dishes/{id}', [DishController::class, 'show'])->name('show');
+Route::post('dishes/', [DishController::class, 'store'])->name('store');
+Route::delete('dishes/{id}', [DishController::class, 'destroy'])->name('delete');
+Route::put('dishes/{id}', [DishController::class, 'update'])->name('update');

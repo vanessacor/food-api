@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Dish;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 class DishController extends Controller
 {
@@ -18,16 +19,6 @@ class DishController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -35,7 +26,8 @@ class DishController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validator($request);
+        return Dish::create($request->all());
     }
 
     /**
@@ -44,20 +36,10 @@ class DishController extends Controller
      * @param  \App\Models\Dish  $dish
      * @return \Illuminate\Http\Response
      */
-    public function show(Dish $dish)
+    public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Dish  $dish
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Dish $dish)
-    {
-        //
+        $dish = Dish::find($id);
+        return $dish;
     }
 
     /**
@@ -67,9 +49,12 @@ class DishController extends Controller
      * @param  \App\Models\Dish  $dish
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Dish $dish)
+    public function update($id, Request $request)
     {
-        //
+        $this->validator($request);
+        $dish = Dish::find($id);
+        $dish->update($request->all());
+        return response()->json($dish, 200);
     }
 
     /**
@@ -78,8 +63,20 @@ class DishController extends Controller
      * @param  \App\Models\Dish  $dish
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Dish $dish)
+    public function destroy($id)
     {
-        //
+        Dish::findOrfail($id)->delete();
+        return response()->json(null, 204);
+    }
+
+    public function validator(Request $request)
+    {
+        return $request->validate([
+            'name' => 'required',
+            'description' => 'required',
+            'price' => 'required',
+            'image' => 'required',
+
+        ]);
     }
 }
