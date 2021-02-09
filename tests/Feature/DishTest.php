@@ -31,7 +31,7 @@ class DishTest extends TestCase
         $dish = Dish::factory()->create();
         $response = $this->get(route('show', $dish->id));
         $response->assertStatus(200);
-        $response->assertJson(['id' => $dish->id,]);
+        $response->assertJsonFragment(['id' => $dish->id,]);
     }
 
     public function test_can_create_dish()
@@ -42,34 +42,34 @@ class DishTest extends TestCase
             'price' => 12,
             'image' => 'https://picsum.photos/200'
         ];
-        $response = $this->postJson(route('store'), $dish);
-        $response->assertStatus(201);
-        $response->assertJsonFragment($dish);
-    
+        $response = $this->postJson(route('store'), $dish)
+            ->assertStatus(201)
+            ->assertJsonFragment(['name'=> 'veggie Pizza']);
+        $this->assertDatabasehas('dishes', ['name' => 'veggie Pizza']);
     }
     public function test_can_delete_dish()
     {
         $dish = Dish::factory()->create();
-        
-        $response = $this->delete(route('delete', $dish->id));
-        $response->assertStatus(204);
+
+        $response = $this->delete(route('delete', $dish->id))
+            ->assertStatus(204);
         $this->assertDatabaseCount('dishes', 0);
-    
     }
 
     public function test_can_update_dish()
     {
         Dish::factory()->create();
         $dish = [
-            'name' => 'veggie Pizza',
+            'name' => 'lasagna',
             'description' => 'Pizza with roasted veggies',
             'price' => 12,
             'image' => 'https://picsum.photos/200'
         ];
-        
-        $response = $this->putJson(route('update', 1), $dish);
-        $response->assertStatus(200);
-        $this->assertDatabasehas('dishes', ['name' => 'veggie Pizza']);
-    
+
+        $response = $this->putJson(route('update', 1), $dish)
+            ->assertStatus(200)
+            ->assertJsonFragment(['name' => 'lasagna']);
+
+        $this->assertDatabasehas('dishes', ['name' => 'lasagna']);
     }
 }

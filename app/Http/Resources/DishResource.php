@@ -15,13 +15,17 @@ class DishResource extends JsonResource
     public function toArray($request)
     {
         return [
-            
+            'type' => 'dishes',
             'id' => $this->id,
-            'name' => $this->name,
-            'description' => $this->description,
-            'image' => $this->image,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'atributes' => [
+                'name' => $this->name,
+                'description' => $this->description,
+                'image' => $this->image,
+                'created_at' => $this->created_at,
+                'updated_at' => $this->updated_at,
+
+            ],
+            'link' => '/dishes/' . $this->id
         ];
     }
 }
