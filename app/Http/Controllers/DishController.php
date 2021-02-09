@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Dish;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use App\Http\Resources\DishResource;
 
 class DishController extends Controller
 {
@@ -27,7 +28,9 @@ class DishController extends Controller
     public function store(Request $request)
     {
         $this->validator($request);
-        return Dish::create($request->all());
+        $dish = Dish::create($request->all());
+        return new DishResource($dish);
+
     }
 
     /**
@@ -39,7 +42,7 @@ class DishController extends Controller
     public function show($id)
     {
         $dish = Dish::find($id);
-        return $dish;
+        return new DishResource($dish);
     }
 
     /**
@@ -54,7 +57,7 @@ class DishController extends Controller
         $this->validator($request);
         $dish = Dish::find($id);
         $dish->update($request->all());
-        return response()->json($dish, 200);
+        return new DishResource($dish);
     }
 
     /**
